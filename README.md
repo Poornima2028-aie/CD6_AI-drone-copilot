@@ -610,3 +610,53 @@ Multi-Simulator Validation
 ├── Gazebo (perception + obstacles)
 └── ArduPilot SITL (real autopilot + MAVLink)
 
+
+### Simulator-Specific Roles
+
+| Simulator | Data Generated | Validation Focus |
+|---|---|---|
+| Gym-PyBullet | State transitions, control inputs | RL policy convergence, baseline performance |
+| MuJoCo | High-fidelity state dynamics | Koopman model accuracy under disturbances |
+| Gazebo | Camera/depth/LiDAR observations | Perception integration, obstacle avoidance |
+| ArduPilot SITL | MAVLink telemetry, mission data | Real autopilot behavior, waypoint tracking |
+
+---
+
+## 6. Conceptual Explanation (Team Research)
+
+A detailed explanatory report on the Koopman Operator and EDMD framework for UAV shared control has been prepared by the team. The key concepts are summarized below:
+
+### Koopman Operator Concept
+
+The Koopman operator provides a way to represent nonlinear dynamics through the evolution of observable functions:
+
+$$
+z_k = \Theta(x_k)
+$$
+
+Where $\Theta$ is a vector of observable functions that "lift" the original state into a higher-dimensional space. In this lifted space, the dynamics become approximately linear:
+
+$$
+z_{k+1} \approx Az_k + Bu_k
+$$
+
+### EDMD Workflow
+Flight Data → Observable Transformation → EDMD → Koopman Model
+
+
+
+The EDMD algorithm:
+1. Collects state transitions $(x_k, u_k, x_{k+1})$
+2. Applies observable functions to lift the state: $z_k = \Theta(x_k)$
+3. Constructs data matrices $X_K$, $Y_K$, $U_K$
+4. Computes the pseudo-inverse to estimate $[A, B]$
+5. Validates prediction accuracy using MAE and RMSE
+
+### Key Insight
+    Koopman → Representation
+EDMD → Learning Dynamics
+Actor-Critic → Decision
+Shared Control → Cooperation
+ArduPilot/PX4 → Flight Control
+YOLO → Perception
+
