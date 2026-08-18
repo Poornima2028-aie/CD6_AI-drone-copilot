@@ -232,21 +232,21 @@ Where $\Omega_U \in \mathbb{R}^{m\times1}$ is the admissible set of control inpu
 **Equation 18 — Hamilton Function:**
 
 $$
-H(X, U, \nabla J^{*}) = X^T Q X + \Xi(U) + (\nabla J^{*})^T (F + GU + D)
+H(X, U, \nabla J^{\ast}) = X^T Q X + \Xi(U) + (\nabla J^{\ast})^T (F + GU + D)
 $$
 
-Where $\nabla J^{*} = \frac{\partial J^{*}}{\partial X}$ is the gradient of the optimal value function.
+Where $\nabla J^{\ast} = \frac{\partial J^{\ast}}{\partial X}$ is the gradient of the optimal value function.
 
 **Equation 19 — Optimal Control Input:**
 
 $$
-U^{*}(X) = -\mu \tanh\left(\frac{R^{-1} G^T (\nabla J^{*}(X))^T}{2\mu}\right)
+U^{\ast}(X) = -\mu \tanh\left(\frac{R^{-1} G^T (\nabla J^{\ast}(X))^T}{2\mu}\right)
 $$
 
 **Equation 20 — Hamilton-Jacobi-Bellman (HJB) Equation:**
 
 $$
-0 = X^T Q X + \Xi(U^{*}) + (\nabla J^{*})^T (F + GU^{*})
+0 = X^T Q X + \Xi(U^{\ast}) + (\nabla J^{\ast})^T (F + GU^{\ast})
 $$
 ---
 
