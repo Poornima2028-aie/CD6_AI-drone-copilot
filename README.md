@@ -403,13 +403,15 @@ Where $\mho = [X^T, \tilde{W}_c^T, \tilde{W}_a^T]^T$.
 **Equation 35 — Lyapunov Function Derivative:**
 
 $$
-\dot{\mathcal{L}} = \nabla J^*(F + G \mho U^* + D) + \tilde{W}_c^T \dot{\hat{W}}_c^T + \tilde{W}_a^T \dot{\hat{W}}_a^T
+\dot{\mathcal{L}} = \nabla J^{\ast}(F + G \mho U^{\ast} + D) + \tilde{W}_c^T \dot{\hat{W}}_c^T + \tilde{W}_a^T \dot{\hat{W}}_a^T
 $$
+
+Where $\mho = \text{diag}(\mho_1, \mho_2, ..., \mho_m)$ with $\mho_i \in [1, 2]$ is the diagonal coefficient matrix associated with the shared control parameter $\alpha_i$. The shared control input is rewritten as $\hat{\mathfrak{U}}(i) = \hat{U}(i) + \alpha_i U_h(i) \approx \mho_i \hat{U}$.
 
 **Equation 36 — Full Lyapunov Derivative Expansion:**
 
 $$
-\dot{\mathcal{L}} = -X^T Q X - \Xi(\mho U^*) + \tilde{W}_a^T(-k_a F_a(\hat{W}_a - \hat{W}_c))
+\dot{\mathcal{L}} = -X^T Q X - \Xi(\mho U^{\ast}) + \tilde{W}_a^T(-k_a F_a(\hat{W}_a - \hat{W}_c))
 $$
 
 $$
