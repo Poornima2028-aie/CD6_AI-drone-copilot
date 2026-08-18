@@ -490,31 +490,32 @@ Where $U$ is the control input vector imposed on the UAV system. This metric mea
 
 
 
+## Algorithm 1: Data-Driven Optimal Shared Control of UAVs
 
-## 3. Algorithm 1: Data-Driven Optimal Shared Control of UAVs
-
-Input: Actor-critic weights Ŵ_c, Ŵ_a, learning rates k_c1, k_c2, k_a,
-projection matrices F_a, experience replay stack, Koopman data set
+```text
+Input: Actor-critic weights Ŵ_c, Ŵ_a, learning rates k_ci (i = 1, 2), k_a,
+       projection matrices F_a, experience replay stack, Koopman data set
 Output: Shared control input applied to UAV
-1: Initialize actor-critic weights Ŵ_c, Ŵ_a
-2: Initialize experience replay stack {U, δ, {U_j, δ_j}}
-3: Initialize Koopman data set {Y_K, X_K, U_K}
-4: while t < T_end do
-5: Collect human control input U_h and system state X
-6: if UAV model is unknown then
-7: Compute transfer function Θ([X^T, U_h^T]^T)
-8: Update Koopman data set with Θ
-9: Estimate dynamics matrices A, B using Eq. (12)
-10: Calculate F̂ and Ĝ using Eq. (13)
-11: end if
-12: Estimate optimal control Û(X) using Eq. (26)
-13: Compute and apply shared control input U_shared using Eq. (27)
-14: Calculate Bellman error δ(X, Ŵ_c, Û, U_h) using Eq. (28)
-15: Update experience replay stack
-16: Update critic weights Ŵ_c using Eq. (29)
-17: Update actor weights Ŵ_a using Eq. (30)
-18: end while
 
+1:  Initialize actor-critic weights Ŵ_c, Ŵ_a, learning rates k_ci (i = 1, 2),
+    k_a, and projection matrices F_a
+2:  Initialize experience replay stack {𝔘, δ, {𝔘_j, δ_j}_{j=1}^N}
+    and Koopman data set {Y_K, X_K, U_K}
+3:  while t < T_end do
+4:      Collect human control input U_h and system state X
+5:      if UAV model is unknown then
+6:          Compute transfer function Θ([X^T, U_h^T]^T)
+7:          Update Koopman data set with Θ
+8:          Estimate dynamics matrices A, B using Eq. (12)
+9:          Calculate F̂ and Ĝ using Eq. (13)
+10:     end if
+11:     Estimate optimal control Û(X) using Eq. (26)
+12:     Compute and apply shared control input 𝔘 using Eq. (27)
+13:     Calculate Bellman error δ(X, Ŵ_c, Û, U_h) using Eq. (28)
+14:     Update experience replay stack with 𝔘 and δ
+15:     Update actor-critic weights Ŵ_c and Ŵ_a using Eq. (29) and Eq. (30)
+16: end while
+```
 
 
 ---
