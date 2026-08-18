@@ -248,6 +248,8 @@ $$
 $$
 0 = X^T Q X + \Xi(U^{\ast}) + (\nabla J^{\ast})^T (F + GU^{\ast})
 $$
+
+This is obtained by combining the optimal control input (Eq. 19) with the Hamilton function (Eq. 18). Solving this HJB equation directly is intractable due to its nonlinearity and high dimensionality, which motivates the use of Actor-Critic reinforcement learning to approximate the optimal value function and control policy online.
 ---
 
 ### 2.5 Shared Control Mechanism ⭐ CORE INNOVATION
