@@ -710,3 +710,51 @@ CD6_AI-drone-copilot/
 │ └── test_telemetry_reader.py
 ├── requirements.txt
 └── README.md
+
+
+---
+
+## 8. Team Responsibilities
+
+| Member | Simulator / Module | Responsibility |
+|---|---|---|
+| Member 1 | Gym-PyBullet Drones | RL environment, baseline policy, maneuver data generation |
+| Member 2 | MuJoCo | High-fidelity dynamics, disturbance testing, robustness |
+| Member 3 | Gazebo / ROS | Sensor simulation, obstacle worlds, perception integration |
+| Member 4 | ArduPilot SITL | MAVLink telemetry, mission validation, autopilot integration |
+
+All members contribute to: Koopman model validation, shared control testing, experiment logging, performance comparison, and final report preparation.
+
+---
+
+## 9. Current Project Status
+
+### Completed
+- [x] Base paper selected and analyzed (Tan et al., Neurocomputing 2025)
+- [x] All mathematical formulations extracted (Eq. 1-42)
+- [x] Algorithm 1 documented
+- [x] Shared control authority allocation logic implemented
+- [x] Multi-simulator workflow designed
+- [x] GitHub repository initialized
+- [x] Team research report on Koopman/EDMD prepared
+
+### In Progress
+- [ ] ArduPilot SITL telemetry bridge (pymavlink)
+- [ ] Koopman EDMD dynamics learning module
+- [ ] Actor-Critic online learning implementation
+
+### Planned
+- [ ] Experience replay stack
+- [ ] Gazebo perception integration
+- [ ] Full Human-in-the-Loop joystick testing
+- [ ] Multi-simulator performance comparison (PSI, ASI, ATE, ACE)
+
+---
+
+## 10. Getting Started
+
+### Install Dependencies
+
+```bash
+pip install numpy matplotlib pymavlink torch
+
