@@ -406,15 +406,22 @@ $$
 $$
 \dot{\mathcal{L}} = -X^T Q X - \Xi(\mho U^*) + \tilde{W}_a^T(-k_a F_a(\hat{W}_a - \hat{W}_c))
 $$
+
 $$
 - \tilde{W}_c^T\left(-\frac{k_{c1}\sigma}{\rho}(-\sigma^T \tilde{W}_c + \frac{1}{4}\tilde{W}_a^T G_\sigma \tilde{W}_a + \Delta)\right)
 $$
+
 $$
 - \tilde{W}_c^T\left(-\frac{k_{c2}}{N}\sum_{k=1}^N \frac{\sigma_k}{\rho_k} \cdot \frac{1}{4}\tilde{W}_a^T G_k^\sigma \tilde{W}_a\right)
 $$
+
 $$
 - \tilde{W}_c^T\left(-\frac{k_{c2}}{N}\sum_{k=1}^N \frac{\sigma_k}{\rho_k}(-(\sigma_k)^T \tilde{W}_a + \Delta_k)\right)
 $$
+
+Where $\rho = (\sigma^T\sigma + 1)^2$, $\rho_k = (\sigma_k^T\sigma_k + 1)^2$, and $\mho = \text{diag}(\mho_1, ..., \mho_m)$ with $\mho_i \in [1, 2]$ is the coefficient associated with the shared control parameter.
+
+This expansion is used in Theorem 1 to prove that the closed-loop system states and NN weight errors are Ultimately Uniformly Bounded (UUB).
 
 **Theorem 1:** Under Assumptions 2-4, the closed-loop system states $X$ and weight errors $[\tilde{W}_c^T, \tilde{W}_a^T]^T$ are **ultimately uniformly bounded (UUB)** when condition (34) is satisfied.
 
