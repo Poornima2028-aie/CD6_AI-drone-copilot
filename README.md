@@ -74,7 +74,8 @@ $$
 \dot{x} = f(x) + g(x)u + d(x)
 $$
 
-Where:
+Where the drift dynamics matrix $f(x)$, control input matrix $g(x)$, and uncertain disturbance matrix $d(x)$ are defined as:
+
 $$
 f = \begin{bmatrix} 0_{3\times3} & I_{3\times3} \\ 0_{3\times3} & -M^{-1}C \end{bmatrix}x, \quad
 g = \begin{bmatrix} 0_{3\times3} \\ B_\gamma \end{bmatrix}, \quad
