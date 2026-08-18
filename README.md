@@ -411,21 +411,20 @@ Where $\mho = \text{diag}(\mho_1, \mho_2, ..., \mho_m)$ with $\mho_i \in [1, 2]$
 **Equation 36 — Full Lyapunov Derivative Expansion:**
 
 $$
-\dot{\mathcal{L}} = -X^T Q X - \Xi(\mho U^{\ast}) + \tilde{W}_a^T(-k_a F_a(\hat{W}_a - \hat{W}_c))
+\dot{\mathcal{L}} = -X^T Q X - \Xi(\mho U^{\ast}) + \tilde{W}_a^T\left(-k_a F_a(\hat{W}_a - \hat{W}_c)\right)
 $$
 
 $$
-- \tilde{W}_c^T\left(-\frac{k_{c1}\sigma}{\rho}(-\sigma^T \tilde{W}_c + \frac{1}{4}\tilde{W}_a^T G_\sigma \tilde{W}_a + \Delta)\right)
+\quad - \tilde{W}_c^T\left(-\frac{k_{c1}\sigma}{\rho}\left(-\sigma^T \tilde{W}_c + \frac{1}{4}\tilde{W}_a^T G_\sigma \tilde{W}_a + \Delta\right)\right)
 $$
 
 $$
-- \tilde{W}_c^T\left(-\frac{k_{c2}}{N}\sum_{k=1}^N \frac{\sigma_k}{\rho_k} \cdot \frac{1}{4}\tilde{W}_a^T G_k^\sigma \tilde{W}_a\right)
+\quad - \tilde{W}_c^T\left(-\frac{k_{c2}}{N}\sum_{k=1}^{N} \frac{\sigma_k}{\rho_k} \cdot \frac{1}{4}\tilde{W}_a^T G_k^\sigma \tilde{W}_a\right)
 $$
 
 $$
-- \tilde{W}_c^T\left(-\frac{k_{c2}}{N}\sum_{k=1}^N \frac{\sigma_k}{\rho_k}(-(\sigma_k)^T \tilde{W}_a + \Delta_k)\right)
+\quad - \tilde{W}_c^T\left(-\frac{k_{c2}}{N}\sum_{k=1}^{N} \frac{\sigma_k}{\rho_k}\left(-(\sigma_k)^T \tilde{W}_a + \Delta_k\right)\right)
 $$
-
 Where $\rho = (\sigma^T\sigma + 1)^2$, $\rho_k = (\sigma_k^T\sigma_k + 1)^2$, and $\mho = \text{diag}(\mho_1, ..., \mho_m)$ with $\mho_i \in [1, 2]$ is the coefficient associated with the shared control parameter.
 
 This expansion is used in Theorem 1 to prove that the closed-loop system states and NN weight errors are Ultimately Uniformly Bounded (UUB).
