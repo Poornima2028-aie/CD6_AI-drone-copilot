@@ -469,3 +469,144 @@ $$
 
 $$
 \text{ACE} = \int_T \|U\|^2 d\tau
+
+
+
+
+
+
+## 3. Algorithm 1: Data-Driven Optimal Shared Control of UAVs
+
+Input: Actor-critic weights Ŵ_c, Ŵ_a, learning rates k_c1, k_c2, k_a,
+projection matrices F_a, experience replay stack, Koopman data set
+Output: Shared control input applied to UAV
+1: Initialize actor-critic weights Ŵ_c, Ŵ_a
+2: Initialize experience replay stack {U, δ, {U_j, δ_j}}
+3: Initialize Koopman data set {Y_K, X_K, U_K}
+4: while t < T_end do
+5: Collect human control input U_h and system state X
+6: if UAV model is unknown then
+7: Compute transfer function Θ([X^T, U_h^T]^T)
+8: Update Koopman data set with Θ
+9: Estimate dynamics matrices A, B using Eq. (12)
+10: Calculate F̂ and Ĝ using Eq. (13)
+11: end if
+12: Estimate optimal control Û(X) using Eq. (26)
+13: Compute and apply shared control input U_shared using Eq. (27)
+14: Calculate Bellman error δ(X, Ŵ_c, Û, U_h) using Eq. (28)
+15: Update experience replay stack
+16: Update critic weights Ŵ_c using Eq. (29)
+17: Update actor weights Ŵ_a using Eq. (30)
+18: end while
+
+
+
+---
+
+## 4. Simulation Parameters
+
+### 4.1 Example 1: Numerical Simulation
+
+| Parameter | Value |
+|---|---|
+| Initial state $X_0$ | $0.03[1_3, 0_3]$ |
+| Initial critic weights $W_{c0}$ | $0.15(1_9 + \text{rand}(9))$ |
+| Initial actor weights $W_{a0}$ | $0.15(1_9 + \text{rand}(9))$ |
+| Saturation bound $\mu_{sat}$ | $0.5$ |
+| Inertia $\gamma_\phi$ | $0.0211$ kg·m² |
+| Inertia $\gamma_\theta$ | $0.0219$ kg·m² |
+| Inertia $\gamma_\psi$ | $0.0366$ kg·m² |
+| Control gain $B_\gamma$ | $\text{diag}([41, 41, 110])$ |
+| Control penalty $R$ | $I_2$ |
+| State penalty $Q$ | $I_6$ |
+| Critic learning rates $k_{c1}, k_{c2}$ | $2, 1$ |
+| Actor learning rate $k_a$ | $1$ |
+| Actor projection $F_a$ | $I_6$ |
+| Human controller | PD: $U_h = -K_p X - K_d \dot{X}$, $K_p=3$, $K_d=0.5$ |
+| Desired trajectory | $X_d = [A_\phi\sin(\omega t), A_\theta\cos(\omega t), A_\psi\sin(\omega t)]^T$ |
+| Amplitude $A_\phi = A_\theta = A_\psi$ | $0.1$ |
+| Frequency $\omega$ | $0.5$ |
+| Simulation time | $10$ s |
+| Step size | $0.001$ s |
+| ODE Solver | Fourth-order Runge-Kutta |
+
+**Basis functions (Example 1):**
+
+$$
+\phi_c = \phi_a = [X(1)^2, X(1)X(4), X(4)^2, X(2)^2, X(2)X(5), X(5)^2, X(3)^2, X(3)X(6), X(6)^2]
+$$
+
+**Compared methods:** Proposed, ADP [Ma et al. 2024], MDA [Broad et al. 2020]
+
+**Result:** The proposed method achieves **19-48% RMSE improvement** and lowest control cost.
+
+### 4.2 Example 2: Human-in-the-Loop Simulation
+
+| Parameter | Value |
+|---|---|
+| Environment | RflySim + MATLAB R23b Simulink |
+| Input device | Logitech F310 gamepad |
+| Task | Fly through two circles (radius 10m) |
+| Circle 1 center | $[250, 75, 100]$ m |
+| Circle 2 center | $[500, -75, 100]$ m |
+| Circle 1 time $T_{c1}$ | $30$ s |
+| Circle 2 time $T_{c2}$ | $60$ s |
+| State penalty $Q$ | $\text{diag}([10000, 10000, 10000, 0.1, 0.1, 0.1])$ |
+| Control penalty $R$ | $10000 \times I_3$ |
+| History stack size $N$ | $30$ |
+| Learning rate $\alpha$ | $0.001$ |
+| Initial weights $W_{c0} = W_{a0}$ | $2 \times 1_4$ |
+| Simulation time | $60$ s |
+| Step size | $0.001$ s |
+| ODE Solver | Fourth-order Runge-Kutta |
+| Joystick resolution | $1/256$ |
+| Joystick value range | $[-0.5, 0.5]$ |
+
+**Result:** The proposed method saves **35.65% control cost** compared to human-only control.
+
+### 4.3 Performance Comparison Results
+
+| Method | PSI ↓ | ASI | ATE ↓ | ACE ↓ |
+|---|---|---|---|---|
+| **Proposed** | **57.74** | 39.16 | **514.72** | **40.73** |
+| ADP only | 66.95 | **5.51** | 945.93 | 46.30 |
+| Human only | 98.54 | 127.58 | 918.97 | 47.01 |
+
+### 4.4 Cooperation Proportion
+
+| Index | Roll Control | Pitch Control | All Control |
+|---|---|---|---|
+| Cooperative time (%) | 54.04 | 80.38 | 90.05 |
+| Cost of Human Control | 7.52 × 10³ | 1.50 × 10⁴ | 2.25 × 10⁴ |
+| Cost of Shared Control | 2.89 × 10³ | 1.16 × 10⁴ | 1.45 × 10⁴ |
+| **Control Cost Saving (%)** | **61.52** | **22.68** | **35.65** |
+
+---
+
+## 5. Multi-Simulator Validation Strategy
+
+This project adapts the base paper's MATLAB/RflySim framework to an open-source multi-simulator stack:
+
+| Simulator | Role | Purpose |
+|---|---|---|
+| **Gym-PyBullet Drones** | RL Training | Lightweight environment for Actor-Critic policy training and maneuver data generation |
+| **MuJoCo** | Physics Validation | High-fidelity dynamics, disturbance rejection, robustness testing |
+| **Gazebo / ROS** | Sensor Simulation | Camera, depth, LiDAR, obstacle environment rendering |
+| **ArduPilot SITL** | Flight Controller Validation | MAVLink telemetry, waypoint missions, failsafes, real autopilot logic |
+
+### Data Flow Across Simulators
+
+Human Maneuver Data
+↓
+Koopman EDMD (Eq. 12) → Linearized Dynamics [A, B]
+↓
+Actor-Critic RL (Eq. 26) → Optimal Control U*
+↓
+Shared Control Allocator (Eq. 21-22) → U_shared
+↓
+Multi-Simulator Validation
+├── PyBullet (RL baseline)
+├── MuJoCo (disturbance robustness)
+├── Gazebo (perception + obstacles)
+└── ArduPilot SITL (real autopilot + MAVLink)
+
