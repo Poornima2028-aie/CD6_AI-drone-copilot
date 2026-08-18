@@ -469,6 +469,9 @@ $$
 
 $$
 \text{ACE} = \int_T \|U\|^2 d\tau
+$$
+
+Where $U$ is the control input vector imposed on the UAV system. This metric measures the total control energy expended during the flight.
 
 
 
