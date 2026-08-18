@@ -98,7 +98,8 @@ $$
 \dot{X} = F(X) + G(X)U + D(X)
 $$
 
-Where:
+Where the augmented dynamics matrices are defined as:
+
 $$
 F(X) = \begin{bmatrix} f(e + x_d) - f_d(x_d) \\ f_d(x_d) \end{bmatrix}
 $$
@@ -110,6 +111,8 @@ $$
 $$
 D(X) = \begin{bmatrix} d(e + x_d) \\ 0_{6\times1} \end{bmatrix}
 $$
+
+The augmented system combines the tracking error dynamics (top half) with the desired trajectory dynamics (bottom half). The desired trajectory evolves autonomously without control input, which is why the bottom row of $G(X)$ is zero.
 
 **Assumption 1:**
 1. The drift dynamics $f(x)$ and control input matrix $g(x)$ are Lipschitz continuous with respect to $x$.
