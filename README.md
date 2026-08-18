@@ -1,106 +1,471 @@
-﻿# AI-CoPilot: Data-Driven Optimal Shared Control for UAVs
+﻿# CD6_AI-drone-copilot
 
-**A Human-in-the-Loop (HiTL) Safety and Decision Support System for Autonomous UAVs**
+## Data-Driven Optimal Shared Control of Unmanned Aerial Vehicles
 
-This repository implements a novel data-driven optimal shared control mechanism for Unmanned Aerial Vehicles (UAVs). Instead of "hard-switching" between human and autonomous control (which causes instability), this AI Co-Pilot smoothly blends the human pilot's joystick input with an optimal autonomous safety controller based on real-time intention alignment.
+A **Human-in-the-Loop (HiTL) AI Co-Pilot** system for UAVs that learns drone dynamics from human maneuver data, approximates an optimal controller online using reinforcement learning, and smoothly blends human pilot control with autonomous optimal control.
 
-## Base Literature
-This project is adapted from the state-of-the-art 2025 paper:
+**Base Paper:**
 
-> **Tan, J., Xue, S., Guo, Z., Li, H., Cao, H., & Chen, B. (2025).**
+> Junkai Tan, Shuangsi Xue, Zihang Guo, Huan Li, Hui Cao, Badong Chen.
 > "Data-driven optimal shared control of unmanned aerial vehicles."
-> **Neurocomputing**, 622, 129428. DOI: 10.1016/j.neucom.2025.129428
+> *Neurocomputing*, Volume 622, 129428, 2025.
+> DOI: [10.1016/j.neucom.2025.129428](https://doi.org/10.1016/j.neucom.2025.129428)
 
-While the base paper utilizes MATLAB/Simulink and RflySim, **this project adapts the mathematical framework to an open-source, multi-simulator Python/ArduPilot stack** for real-world flight controller validation.
-
----
-
-## Core Mathematical Framework
-
-The system utilizes a **Koopman Operator** to predict nonlinear UAV dynamics from human maneuver data, and an **Actor-Critic Reinforcement Learning** network to approximate the optimal safe controller (U*) online.
-
-### 1. Smooth Shared Control Mechanism (Eq. 21 from Base Paper)
-The final control input sent to the UAV is a smooth blend of the AI's optimal input (U*) and the Human's input (U_h):
-
-    U_shared = U* + alpha * U_h
-
-### 2. Adaptive Authority Allocation (Eq. 22)
-The authority parameter alpha in [0, 1] is determined by the angle eta between the human's input vector and the AI's safe input vector:
-
-- **alpha = 0 (Full Autonomy):** if eta >= beta_1 (2*pi/3). The human is steering dangerously; the AI takes over to prevent a crash.
-- **alpha = 1 (Full Human):** if eta <= beta_2 (pi/2). The human's intention aligns with the safe path; the AI yields control.
-- **0 < alpha < 1 (Smooth Transition):** Linear interpolation between beta_1 and beta_2 to prevent jerky control switching.
-
-### 3. Koopman Operator / EDMD Dynamics Learning (Eq. 12)
-The linearized system dynamics matrices A and B are learned from human maneuver data:
-
-    [A, B] = Y_kappa * [X_kappa, U_kappa]^dagger
-
-### 4. Actor-Critic Online Optimal Control (Eq. 26)
-The optimal control input is approximated online:
-
-    U_hat(X) = -mu * tanh(R^-1 * G_hat^T * W_a^T * phi_a(X) / (2*mu))
+**Affiliation:** Xi'an Jiaotong University
 
 ---
 
-## Multi-Simulator Architecture (Team of 4)
+## 1. Project Overview
 
-To ensure aerospace-grade reliability, the project is validated across four distinct simulation environments:
+This project implements a data-driven optimal shared control system for UAVs. The system:
 
-| Simulator | Team Role | Purpose in Project |
-| :--- | :--- | :--- |
-| **ArduPilot SITL** | **Lead Integration (My Part)** | Industry-standard flight controller. MAVLink telemetry extraction, waypoint navigation, and real-world autopilot logic validation. |
-| **Gazebo / ROS** | Sensor Simulation | Renders 3D environments, LiDAR, and depth cameras to feed the Koopman state observer. |
-| **MuJoCo** | Dynamics & Physics | High-fidelity contact dynamics, wind disturbance modeling, and collision physics. |
-| **Gym-PyBullet** | RL Training | Lightweight environment for initial Actor-Critic neural network training and baseline policy testing. |
+1. Predicts nonlinear UAV dynamics using **Koopman operators** from human maneuver data.
+2. Approximates the optimal controller online using **Actor-Critic reinforcement learning**.
+3. Smoothly blends human and autonomous control using an adaptive **shared control mechanism**.
+4. Validates across **four simulation platforms**: Gym-PyBullet, MuJoCo, Gazebo, and ArduPilot SITL.
 
----
+### Core Contributions (from Base Paper)
 
-## Repository Structure
-
-    CD6_AI-drone-copilot/
-    |-- docs/                      # Base paper summary, math proofs, and Review 1 slides
-    |-- src/
-    |   |-- ardupilot_bridge/      # MAVLink telemetry & state extraction (Python/pymavlink)
-    |   |-- safety/                # Shared control authority allocation logic (Eq. 21-22)
-    |   |-- koopman/               # EDMD dynamics prediction matrices (A, B)
-    |   `-- vision/                # YOLOv7 / ZoeDepth obstacle & depth estimation
-    |-- simulation/
-    |   |-- ardupilot_sitl/        # Mission Planner configs and SITL startup scripts
-    |   |-- gazebo/                # ROS/Gazebo world files
-    |   |-- mujoco/                # MuJoCo XML drone models
-    |   `-- pybullet/              # Gym environment wrappers
-    |-- tests/                     # Unit tests for math and telemetry parsing
-    `-- requirements.txt           # Python dependencies
+1. A data-driven optimal shared control method using Koopman operators and RL, learning online without a precise UAV dynamics model.
+2. A smooth shared control mechanism that judges cooperative intention and integrates both human and autonomous control inputs via an adaptive parameter.
+3. Online optimal controller approximation exploiting human operator experience, validated through Human-in-the-Loop simulations.
 
 ---
 
-## Phase 1 Progress (Review 1 Milestone)
+## 2. Complete Mathematical Formulation
 
-- [x] **Literature Review:** Selected and analyzed Tan et al. (Neurocomputing 2025).
-- [x] **Mathematical Formulation:** Extracted Koopman EDMD and Shared Control equations.
-- [x] **ArduPilot SITL Setup:** Successfully initialized Software-In-The-Loop via Mission Planner.
-- [x] **Telemetry Pipeline:** Built Python pymavlink bridge to extract live state vectors X = [Phi, Phi_dot] from ArduPilot.
-- [ ] **Phase 2:** Implement Actor-Critic NN weight update laws (Eq. 29-30) in Python.
-- [ ] **Phase 3:** Integrate Gazebo camera feed for Koopman state observation.
-- [ ] **Phase 4:** Full HiTL (Human-in-the-Loop) joystick testing with authority blending.
+### 2.1 UAV Attitude Dynamics Model
+
+**Equation 1 — Euler-Lagrange Attitude Dynamics:**
+
+$$
+M\ddot{\Phi} = -C(\Phi, \dot{\Phi})\dot{\Phi} + \tau + W(\Phi, \dot{\Phi})
+$$
+
+Where:
+- $M = \text{diag}([J_\phi, J_\theta, J_\psi]) \in \mathbb{R}^{3\times3}$ is the inertial matrix
+- $\Phi = [\phi, \theta, \psi]^T \in \mathbb{R}^{3\times1}$ is the roll, pitch, yaw angle vector
+- $C(\Phi, \dot{\Phi}): \mathbb{R}^{6\times1} \to \mathbb{R}^{3\times3}$ is the coupled Coriolis term
+- $\tau = [\gamma_\phi, \gamma_\theta, \gamma_\psi]^T \in \mathbb{R}^{3\times1}$ is the input torque
+- $W(\Phi, \dot{\Phi})$ is the uncertain disturbance
+
+The input torques are generated by:
+- $\gamma_\phi = \alpha_l \alpha_w u_\phi$, where $u_\phi = \omega_1^2 - \omega_3^2$
+- $\gamma_\theta = \alpha_l \alpha_w u_\theta$, where $u_\theta = \omega_2^2 - \omega_1^2 + \omega_3^2 - \omega_2^2 - \omega_4^2$
+- $\gamma_\psi = \alpha_\gamma u_\psi$
+
+Where $\alpha_l$ is the distance from center of mass to each rotor, $\alpha_w$ is the thrust factor, $\alpha_\gamma$ is the drag factor, and $\omega_j$ ($j=1,...,4$) is the speed of the $j$-th rotor.
+
+**Equation 2 — Reformulated Dynamics:**
+
+Define $B_\gamma = M^{-1} \times \text{diag}([\alpha_l \alpha_w, \alpha_l \alpha_w, \alpha_\gamma]) \in \mathbb{R}^{3\times3}$:
+
+$$
+\ddot{\Phi} = -M^{-1}(C(\Phi, \dot{\Phi})\dot{\Phi}) + B_\gamma U + \Omega(\Phi, \dot{\Phi})
+$$
+
+Where $\Omega(\Phi, \dot{\Phi}) = M^{-1} \times W(\Phi, \dot{\Phi})$ is the transformed uncertain disturbance.
+
+**Equation 3 — Nonlinear Affine-Input Form:**
+
+Define state $x = [\Phi^T, \dot{\Phi}^T]^T \in \mathbb{R}^{6\times1}$:
+
+$$
+\dot{x} = f(x) + g(x)u + d(x)
+$$
+
+Where:
+$$
+f = \begin{bmatrix} 0_{3\times3} & I_{3\times3} \\ 0_{3\times3} & -M^{-1}C \end{bmatrix}x, \quad
+g = \begin{bmatrix} 0_{3\times3} \\ B_\gamma \end{bmatrix}, \quad
+d = \begin{bmatrix} 0_{3\times1} \\ \Omega \end{bmatrix}
+$$
+
+**Equation 4 — Tracking Error Dynamics:**
+
+With desired trajectory $x_d = [\Phi_d^T, \dot{\Phi}_d^T]^T$ and tracking error $e = x - x_d$:
+
+$$
+\dot{e} = \dot{x} - \dot{x}_d = [f(x) - f_d(x_d)] + g(x)u + d(x)
+$$
+
+**Equation 5 — Augmented Dynamics:**
+
+With augmented state $X = [e^T, x_d^T]^T \in \mathbb{R}^{12\times1}$ and augmented control $U = [u^T, 0_{1\times3}]^T \in \mathbb{R}^{6\times1}$:
+
+$$
+\dot{X} = F(X) + G(X)U + D(X)
+$$
+
+Where:
+$$
+F(X) = \begin{bmatrix} f(e + x_d) - f_d(x_d) \\ f_d(x_d) \end{bmatrix}
+$$
+
+$$
+G(X) = \begin{bmatrix} g(e + x_d) & 0_{6\times3} \\ 0_{6\times3} & 0_{6\times3} \end{bmatrix}
+$$
+
+$$
+D(X) = \begin{bmatrix} d(e + x_d) \\ 0_{6\times1} \end{bmatrix}
+$$
+
+**Assumption 1:**
+1. The drift dynamics $f(x)$ and control input matrix $g(x)$ are Lipschitz continuous with respect to $x$.
+2. The uncertain disturbance $D(X)$ is bounded by a known function $L_D(X)$, i.e., $\|D(X)\| \leq L_D(X)$ with $L_D(0) = 0$.
 
 ---
 
-## Getting Started (ArduPilot Telemetry Bridge)
+### 2.2 Koopman Operator Framework
 
-1. Install dependencies:
+**Equation 6 — Uncontrolled Nonlinear Dynamics:**
 
-       pip install -r requirements.txt
+$$
+x_{t+1} = \mathcal{F}(x_t)
+$$
 
-2. Start ArduPilot SITL via Mission Planner (UDP port 14550).
-3. Run the telemetry reader to extract live UAV states:
+Where $\mathcal{F}: \mathbb{R}^n \to \mathbb{R}^n$ is the nonlinear drift dynamics.
 
-       python src/ardupilot_bridge/telemetry_reader.py
+**Equation 7 — Koopman Operator Definition (Uncontrolled):**
 
-4. Test the shared control authority allocation math:
+$$
+(\mathcal{K}\Psi)(x_{t+1}) = \Psi(\mathcal{F}(x_t))
+$$
 
-       python src/safety/shared_control.py
+Where $\Psi: \mathbb{R}^n \to \mathcal{H}$ is the transfer function mapping state-space to Hilbert space.
 
-## License
-This project is developed for academic research and evaluation purposes.
+**Equation 8 — Extended System Dynamics (Controlled):**
+
+With extended state $\chi_t = [x_t^T, u_t^T]^T$:
+
+$$
+\chi_{t+1} = \mathcal{F}(\chi_t) := \begin{bmatrix} \mathcal{F}(x, u(0)) \\ \mathcal{L}u \end{bmatrix}
+$$
+
+Where $\mathcal{L}$ is the left shift operator satisfying $(\mathcal{L}u)_i = u_{i+1}$.
+
+**Equation 9 — Koopman Operator (Controlled):**
+
+$$
+(\mathcal{K}\Theta)(\chi) = \Theta(\mathcal{F}(\chi))
+$$
+
+Where $\Theta: \mathbb{R}^{n+l} \to \mathbb{R}$ is the transfer function for the extended system.
+
+---
+
+### 2.3 Extended Dynamic Mode Decomposition (EDMD)
+
+**Equation 10 — EDMD Approximation:**
+
+$$
+\Theta(\chi_{t+1}) = \mathcal{K}^T \Theta(\chi_t) + \varepsilon(\chi_t)
+$$
+
+Where $\varepsilon(\chi_t)$ is the approximation error of the Koopman operator.
+
+**Equation 11 — EDMD Objective Function:**
+
+Given collected data $(\chi_j, \chi_{j+1})$, $j = 1, ..., N_\mathcal{K}$:
+
+$$
+E_\mathcal{K} = \sum_{j=1}^{N_\mathcal{K}} \|\varepsilon(\chi_j)\|^2 = \sum_{j=1}^{N_\mathcal{K}} \|\Theta(\chi_{j+1}) - K^T \Theta(\chi_j)\|^2
+$$
+
+**Equation 12 — Linearized Dynamics Matrices:**
+
+With transformed state data $X_\mathcal{K} = [\Theta(\chi_1), ..., \Theta(\chi_{N_\mathcal{K}-1})]$, output data $Y_\mathcal{K} = [\Theta(\chi_2), ..., \Theta(\chi_{N_\mathcal{K}})]$, and control data $U_\mathcal{K} = [\Theta(u_1), ..., \Theta(u_{N_\mathcal{K}})]$:
+
+$$
+[A, B] = Y_\mathcal{K} [X_\mathcal{K}, U_\mathcal{K}]^{\dagger}
+$$
+
+Where $\dagger$ denotes the Moore-Penrose pseudo-inverse.
+
+**Equation 13 — Estimated Augmented Dynamics Matrices:**
+
+$$
+\hat{F} = \begin{bmatrix} A \times (e + x_d) - f_d(x_d) \\ f_d(x_d) \end{bmatrix}, \quad
+\hat{G} = \begin{bmatrix} B & 0_{6\times3} \\ 0_{6\times3} & 0_{6\times3} \end{bmatrix}
+$$
+
+---
+
+### 2.4 Optimal Control Formulation
+
+**Equation 14 — Quadratic Cost Function:**
+
+$$
+J(X, U) = \int_{t_0}^{\infty} r(X(\tau), U(\tau)) \, d\tau
+$$
+
+Where the saturated control input satisfies $-\mu \leq U(t) \leq \mu$.
+
+**Equation 15 — Instantaneous Reward Function:**
+
+$$
+r(X, U) = X^T Q X + \Xi(U)
+$$
+
+Where $Q \in \mathbb{R}^{n\times n}$ is the positive definite state penalty matrix.
+
+**Equation 16 — Control Input Penalty:**
+
+$$
+\Xi(U) = 2R \int_0^U \left(\mu \tanh^{-1}\left(\frac{\zeta_U}{\mu}\right)\right) d\zeta_U
+$$
+
+Where $R \in \mathbb{R}^{n\times n}$ is the positive definite control input penalty matrix.
+
+**Equation 17 — Optimal Value Function:**
+
+$$
+J^*(X) = \min_{U(\tau) \in \Omega_U} \int_t^{\infty} r(X(\tau), U(\tau)) \, d\tau
+$$
+
+Where $\Omega_U \in \mathbb{R}^{m\times1}$ is the admissible set of control input.
+
+**Equation 18 — Hamilton Function:**
+
+$$
+H(X, U, \nabla J^*) = X^T Q X + \Xi(U) + (\nabla J^*)^T (F + GU + D)
+$$
+
+Where $\nabla J^* = \frac{\partial J^*}{\partial X}$ is the gradient of the optimal value function.
+
+**Equation 19 — Optimal Control Input:**
+
+$$
+U^*(X) = -\mu \tanh\left(\frac{R^{-1} G^T (\nabla J^*(X))^T}{2\mu}\right)
+$$
+
+**Equation 20 — Hamilton-Jacobi-Bellman (HJB) Equation:**
+
+$$
+0 = X^T Q X + \Xi(U^*) + (\nabla J^*)^T (F + GU^*)
+$$
+
+---
+
+### 2.5 Shared Control Mechanism ⭐ CORE INNOVATION
+
+**Equation 21 — Shared Control Input:**
+
+$$
+\mathfrak{U} = U^* + \alpha U_h
+$$
+
+Where:
+- $\mathfrak{U}$ is the shared control input applied to the UAV
+- $U^*$ is the optimal control input from autonomy
+- $U_h$ is the human control input
+- $\alpha \in [0, 1]$ is the shared control parameter
+
+**Equation 22 — Adaptive Authority Allocation:**
+
+$$
+\alpha = \begin{cases}
+0, & \text{if } \eta \geq \beta_1 \\
+1, & \text{if } \eta \leq \beta_2 \\
+\frac{\eta - \beta_1}{\beta_2 - \beta_1}, & \text{otherwise}
+\end{cases}
+$$
+
+Where:
+- $\eta$ is the angle between the optimal control vector and human control vector
+- $\beta_1 = \frac{2\pi}{3}$ (120°) — upper threshold
+- $\beta_2 = \frac{\pi}{2}$ (90°) — lower threshold
+
+**Interpretation:**
+
+| Condition | Angle Range | α Value | Control Authority |
+|---|---|---|---|
+| $\eta \geq \beta_1$ | ≥ 120° | $\alpha = 0$ | Full autonomy (human input rejected) |
+| $\eta \leq \beta_2$ | ≤ 90° | $\alpha = 1$ | Full cooperation (human + autonomy) |
+| $\beta_2 < \eta < \beta_1$ | 90°–120° | $0 < \alpha < 1$ | Smooth transition zone |
+
+**Remark 2 (Optimality Guarantee):** When $\alpha = 0$, only the optimal control input is applied, achieving global optimality. When $\alpha = 1$ and $\eta = 0$ (human input aligns with optimal input), the shared control achieves optimality despite full human authority.
+
+---
+
+### 2.6 Actor-Critic Approximation
+
+**Equation 23 — Value Function Reconstruction (Critic NN):**
+
+$$
+J^*(X) = W_c^T \phi_c(X) + \varepsilon_c(X)
+$$
+
+Where $W_c \in \mathbb{R}^{n_{\phi_c} \times 1}$ are the ideal critic NN weights and $\varepsilon_c(X)$ is the reconstruction error.
+
+**Equation 24 — Optimal Control Reconstruction (Actor NN):**
+
+$$
+U^*(X) = -\mu \tanh\left(\frac{R^{-1} \hat{G}^T (\nabla \phi_a)^T W_a}{2\mu}\right)
+$$
+
+Where $W_a \in \mathbb{R}^{n_{\phi_a} \times 1}$ are the ideal actor NN weights.
+
+**Equation 25 — Estimated Value Function:**
+
+$$
+\hat{J}(X) = \hat{W}_c^T \phi_c(X)
+$$
+
+Where $\hat{W}_c$ are the estimated critic NN weights.
+
+**Equation 26 — Estimated Optimal Control Input:**
+
+$$
+\hat{U}(X) = -\mu \tanh\left(\frac{R^{-1} \hat{G}^T \hat{W}_a^T \phi_a(X)}{2\mu}\right)
+$$
+
+Where $\hat{W}_a$ are the estimated actor NN weights.
+
+**Equation 27 — Estimated Shared Control Input:**
+
+$$
+\hat{\mathfrak{U}} = \hat{U} + \alpha U_h
+$$
+
+**Equation 28 — Shared Control Bellman Error:**
+
+$$
+\delta(X, \hat{W}_c, \hat{U}, U_h) = \nabla \hat{J}^T (\hat{F} + \hat{G}\hat{\mathfrak{U}} + D) + r(X, \hat{\mathfrak{U}})
+$$
+
+$$
+= \hat{W}_c^T \nabla \phi_c (\hat{F} + \hat{G}(\hat{U} + \alpha U_h) + D) + X^T Q X + \Xi(\hat{U} + \alpha U_h)
+$$
+
+---
+
+### 2.7 Online Learning Update Laws
+
+**Equation 29 — Critic NN Weight Update Law:**
+
+$$
+\dot{\hat{W}}_c = -\frac{k_{c1} \delta \sigma}{(\sigma^T \sigma + 1)^2} - \frac{k_{c2}}{N} \sum_{k=1}^{N} \frac{\delta_k \sigma_k}{((\sigma_k)^T \sigma_k + 1)^2}
+$$
+
+Where:
+- $k_{c1}, k_{c2} > 0$ are critic learning rates
+- $\sigma = \nabla \phi_c^T(X)(F + G\hat{\mathfrak{U}} + D)$ is the regression vector
+- $\sigma_k = \nabla \phi_c^T(X_k)(F + G\hat{\mathfrak{U}}_k + D)$ is the $k$-th historical regression vector
+- $N$ is the experience replay stack size
+
+**Equation 30 — Actor NN Weight Update Law (Gradient Projection):**
+
+$$
+\dot{\hat{W}}_a = \text{Proj}(-k_a F_a (\hat{W}_a - \hat{W}_c))
+$$
+
+Where:
+- $k_a > 0$ is the actor learning rate
+- $F_a \in \mathbb{R}^{n_\phi \times n_\phi}$ is a positive definite matrix
+- $\text{Proj}(\cdot)$ is a projection operator ensuring bounded weights
+
+---
+
+### 2.8 Stability Analysis
+
+**Equation 31 — Control Approximation Bound:**
+
+$$
+\|U^*(X) - \hat{U}(X)\|^2 \leq \Sigma \tilde{W}_a^T \tilde{W}_a + \Pi_u
+$$
+
+**Equation 32 — Bellman Error Decomposition:**
+
+$$
+\delta = -\sigma^T \tilde{W}_c + \frac{1}{4} \tilde{W}_a G_\sigma \tilde{W}_a + \Delta(X) + \xi_H
+$$
+
+**Equation 33 — Historical Bellman Error:**
+
+$$
+\delta_k = -(\sigma_k)^T \tilde{W}_c + \frac{1}{4} \tilde{W}_a G_k^\sigma \tilde{W}_a + \Delta_k(X)
+$$
+
+**Equation 34 — UUB Stability Condition:**
+
+$$
+\|\mho\| \geq \left(\frac{\Upsilon_{res}}{\lambda_{\min}(\mathcal{M})}\right)^{1/2}
+$$
+
+Where $\mho = [X^T, \tilde{W}_c^T, \tilde{W}_a^T]^T$.
+
+**Equation 35 — Lyapunov Function Derivative:**
+
+$$
+\dot{\mathcal{L}} = \nabla J^*(F + G \mho U^* + D) + \tilde{W}_c^T \dot{\hat{W}}_c^T + \tilde{W}_a^T \dot{\hat{W}}_a^T
+$$
+
+**Equation 36 — Full Lyapunov Derivative Expansion:**
+
+$$
+\dot{\mathcal{L}} = -X^T Q X - \Xi(\mho U^*) + \tilde{W}_a^T(-k_a F_a(\hat{W}_a - \hat{W}_c))
+$$
+$$
+- \tilde{W}_c^T\left(-\frac{k_{c1}\sigma}{\rho}(-\sigma^T \tilde{W}_c + \frac{1}{4}\tilde{W}_a^T G_\sigma \tilde{W}_a + \Delta)\right)
+$$
+$$
+- \tilde{W}_c^T\left(-\frac{k_{c2}}{N}\sum_{k=1}^N \frac{\sigma_k}{\rho_k} \cdot \frac{1}{4}\tilde{W}_a^T G_k^\sigma \tilde{W}_a\right)
+$$
+$$
+- \tilde{W}_c^T\left(-\frac{k_{c2}}{N}\sum_{k=1}^N \frac{\sigma_k}{\rho_k}(-(\sigma_k)^T \tilde{W}_a + \Delta_k)\right)
+$$
+
+**Theorem 1:** Under Assumptions 2-4, the closed-loop system states $X$ and weight errors $[\tilde{W}_c^T, \tilde{W}_a^T]^T$ are **ultimately uniformly bounded (UUB)** when condition (34) is satisfied.
+
+---
+
+### 2.9 Simplified Position Dynamics (HiTL Simulation)
+
+**Equation 37 — Simplified Position Control System:**
+
+Assuming small attitude angles ($\sin\phi \approx \phi$, $\cos\phi \approx 1$, $\sin\theta \approx \theta$, $\cos\theta \approx 1$):
+
+$$
+\begin{cases}
+\dot{p}_i = v_i, & i \in \{x, y, z\} \\
+\dot{v}_x = -g(\phi_d \sin\psi + \theta_d \cos\psi) \\
+\dot{v}_y = -g(-\phi_d \cos\psi + \theta_d \sin\psi) \\
+\dot{v}_z = g - f/m
+\end{cases}
+$$
+
+Where $p = [p_x, p_y, p_z]^T$ is position, $v = [v_x, v_y, v_z]^T$ is velocity, $\Theta = [\phi, \theta]^T$ is the desired attitude (human input), and tracking state is $X = [p - p_d, v - v_d]^T$.
+
+**Equation 38 — Basis Functions for HiTL:**
+
+$$
+\phi_c = \phi_a = [X(1)X(4), \; X(2)X(5), \; X(1)^3 X(4), \; X(2)^3 X(5)]
+$$
+
+---
+
+### 2.10 Performance Metrics
+
+**Equation 39 — Position Smoothness Index (PSI):**
+
+$$
+\text{PSI} = \int_T \left\|\frac{d^3 p}{d\tau^3}\right\|^2 d\tau
+$$
+
+**Equation 40 — Attitude Smoothness Index (ASI):**
+
+$$
+\text{ASI} = \int_T \left\|\frac{d^3 \Theta}{d\tau^3}\right\|^2 d\tau
+$$
+
+**Equation 41 — Accumulated Tracking Error (ATE):**
+
+$$
+\text{ATE} = \int_T \|p - p_d\|^2 d\tau
+$$
+
+**Equation 42 — Accumulated Control Energy (ACE):**
+
+$$
+\text{ACE} = \int_T \|U\|^2 d\tau
