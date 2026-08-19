@@ -1,4 +1,14 @@
-﻿# CD6_AI-drone-copilot
+<p align="center">
+  <img src="assets/amrita_logo.png" alt="Amrita Vishwa Vidyapeetham Logo" width="180"/>
+</p>
+
+<h1 align="center">CD6_AI-Drone-Copilot</h1>
+
+<h3 align="center">
+Data-Driven Optimal Shared Control of Unmanned Aerial Vehicles
+</h3>
+ 
+# CD6_AI-drone-copilot
 
 ## Data-Driven Optimal Shared Control of Unmanned Aerial Vehicles
 
