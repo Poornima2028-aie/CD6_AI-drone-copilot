@@ -16,8 +16,8 @@
   <tr>
     <td align="center">1</td>
     <td>Iniya</td>
-    <td align="center">CB.SC.U4AIE242</td>
-    <td>cb.sc.u4aie242@cb.students.amrita.edu</td>
+    <td align="center">CB.SC.U4AIE24219</td>
+    <td>cb.sc.u4aie24219@cb.students.amrita.edu</td>
   </tr>
   <tr>
     <td align="center">2</td>
