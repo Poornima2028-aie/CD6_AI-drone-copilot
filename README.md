@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/amrita_logo.png" alt="Amrita Vishwa Vidyapeetham Logo" width="180"/>
+  <img src="assets/amrita_logo.png.jpeg" alt="Amrita Vishwa Vidyapeetham Logo" width="180"/>
 </p>
 
 <h1 align="center">CD6_AI-Drone-Copilot</h1>
