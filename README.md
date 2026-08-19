@@ -54,7 +54,118 @@ A **Human-in-the-Loop (HiTL) AI Co-Pilot** system for UAVs that learns drone dyn
 
 ---
 
-## 1. Project Overview
+## 📌 Introduction
+
+Unmanned Aerial Vehicles (UAVs) are increasingly used in environments where
+safe and reliable navigation is essential. However, fully autonomous UAV
+operation can be challenging in dynamic or uncertain environments.
+
+Human operators provide flexibility and decision-making capability during
+flight, but continuous manual control may result in delayed reactions when
+obstacles appear suddenly.
+
+To address this limitation, this project proposes a **Human–Autonomy Shared
+Control system** for UAV obstacle avoidance. Under normal flight conditions,
+the UAV remains under human control. When a critical obstacle is detected,
+the autonomous safety controller temporarily takes over to perform a safe
+obstacle-avoidance maneuver.
+
+Once the obstacle has been cleared and the UAV becomes stable, control
+authority is automatically returned to the human operator.
+
+The system is implemented and evaluated in the **GymPyBullet simulation
+environment**, using a Crazyflie 2.x (CF2X) UAV and a PID-based position
+controller.
+
+---
+
+## 🚨 Problem Statement
+
+Manual UAV operation provides human flexibility, but it depends heavily on
+the operator's reaction time. When the pilot commands the UAV toward an
+obstacle, continuing the same command may result in a collision.
+
+On the other hand, a completely autonomous controller removes the human
+operator from normal decision-making.
+
+Therefore, there is a need for a **shared-control mechanism** that:
+
+- Continuously monitors the UAV's surrounding environment.
+- Detects obstacles that pose a critical risk.
+- Determines when human control may result in a collision.
+- Temporarily overrides unsafe forward motion.
+- Performs local obstacle avoidance.
+- Maintains stable UAV movement during autonomous intervention.
+- Automatically returns control to the human operator after the obstacle
+  has been cleared.
+
+The main challenge is to perform this autonomous intervention **without
+causing abrupt or unsafe UAV movements**.
+
+---
+
+## 🎯 Objectives
+
+The main objectives of this project are:
+
+1. **Develop a UAV environment for human-controlled flight.**
+
+2. **Continuously monitor the UAV's surrounding environment.**
+
+3. **Identify obstacles that threaten the UAV's intended flight path.**
+
+4. **Determine when human control may result in a collision.**
+
+5. **Automatically activate autonomous safety assistance during critical
+   situations.**
+
+6. **Select a safe direction for obstacle avoidance.**
+
+7. **Execute a local collision-free avoidance maneuver.**
+
+8. **Maintain stable UAV motion during autonomous intervention.**
+
+9. **Return control to the human operator after the obstacle is cleared.**
+
+10. **Evaluate the effectiveness and safety of the proposed shared-control
+    mechanism.**
+
+---
+
+## 🛠️ Key Idea
+
+The proposed system follows a simple shared-control principle:
+
+**Human Control → Obstacle Detection → Risk Assessment → Autonomous Takeover
+→ Safe Avoidance → UAV Stabilization → Human Control**
+
+The UAV is therefore not fully autonomous throughout the flight. Instead,
+autonomy is activated only when it is required for safety.
+
+---
+
+## 🔄 System Overview
+
+1. The UAV starts in **MANUAL mode**.
+2. The human operator provides flight commands.
+3. The environment is continuously monitored for obstacles.
+4. The system checks whether an obstacle lies within the UAV's forward
+   flight corridor.
+5. If there is no critical obstacle, human control continues.
+6. If a critical obstacle is detected, autonomous safety control is
+   activated.
+7. Forward motion is reduced or stopped.
+8. The available clearance around the obstacle is evaluated.
+9. A safer direction is selected.
+10. A local collision-free avoidance path is generated.
+11. The UAV follows the selected path using the PID controller.
+12. After clearing the obstacle, the UAV is stabilized.
+13. Autonomous intervention is terminated.
+14. Control is returned to the human operator.
+
+---
+
+##  Project Overview
 
 This project implements a data-driven optimal shared control system for UAVs. The system:
 
