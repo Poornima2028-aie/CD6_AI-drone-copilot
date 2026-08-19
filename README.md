@@ -9,33 +9,33 @@
 <table align="center">
   <tr>
     <th>S.No.</th>
-    <th>Poornima Paidy</th>
-    <th>CB.SC.U4AIE24343/th>
-    <th>cb.sc.u4aie24343@cb.students.amrita.edu</th>
+    <th>Name</th>
+    <th>Roll Number</th>
+    <th>Gmail</th>
   </tr>
   <tr>
     <td align="center">1</td>
-    <td>Poornima Paidy</td>
-    <td align="center">CB.EN.U4AIE230XX</td>
-    <td>poornima@gmail.com</td>
+    <td>Iniya</td>
+    <td align="center">CB.SC.U4AIE2434</td>
+    <td>cb.sc.u4aie2434@cb.students.amrita.edu</td>
   </tr>
   <tr>
     <td align="center">2</td>
-    <td>Team Member 2</td>
-    <td align="center">CB.EN.U4AIE230XX</td>
-    <td>member2@gmail.com</td>
+    <td>Somwya</td>
+    <td align="center">CB.SC.U4AIE24357</td>
+    <td>cb.sc.u4aie24357@cb.students.amrita.edu</td>
   </tr>
   <tr>
     <td align="center">3</td>
-    <td>Team Member 3</td>
-    <td align="center">CB.EN.U4AIE230XX</td>
-    <td>member3@gmail.com</td>
+    <td>Likitha Reddy</td>
+    <td align="center">CB.SC.U4AIE24361</td>
+    <td>cb.sc.u4aie24361@cb.students.amrita.edu</td>
   </tr>
   <tr>
     <td align="center">4</td>
-    <td>Team Member 4</td>
-    <td align="center">CB.EN.U4AIE230XX</td>
-    <td>member4@gmail.com</td>
+    <td>Poornima P</td>
+    <td align="center">CB.SC.U4AIE24343</td>
+    <td>cb.sc.u4aie24343@cb.students.amrita.edu</td>
   </tr>
 </table>
 
