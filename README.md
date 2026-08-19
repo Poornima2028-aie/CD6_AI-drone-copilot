@@ -2,13 +2,42 @@
   <img src="amrita_logo.jpeg" alt="Amrita Vishwa Vidyapeetham Logo" width="380"/>
 </p>
 
-<h1 align="center">CD6_AI-Drone-Copilot</h1>
-
-<h3 align="center">
-Data-Driven Optimal Shared Control of Unmanned Aerial Vehicles
-</h3>
- 
 # CD6_AI-drone-copilot
+
+## 👥 Team Members
+
+<table align="center">
+  <tr>
+    <th>S.No.</th>
+    <th>Poornima Paidy</th>
+    <th>CB.SC.U4AIE24343/th>
+    <th>cb.sc.u4aie24343@cb.students.amrita.edu</th>
+  </tr>
+  <tr>
+    <td align="center">1</td>
+    <td>Poornima Paidy</td>
+    <td align="center">CB.EN.U4AIE230XX</td>
+    <td>poornima@gmail.com</td>
+  </tr>
+  <tr>
+    <td align="center">2</td>
+    <td>Team Member 2</td>
+    <td align="center">CB.EN.U4AIE230XX</td>
+    <td>member2@gmail.com</td>
+  </tr>
+  <tr>
+    <td align="center">3</td>
+    <td>Team Member 3</td>
+    <td align="center">CB.EN.U4AIE230XX</td>
+    <td>member3@gmail.com</td>
+  </tr>
+  <tr>
+    <td align="center">4</td>
+    <td>Team Member 4</td>
+    <td align="center">CB.EN.U4AIE230XX</td>
+    <td>member4@gmail.com</td>
+  </tr>
+</table>
 
 ## Data-Driven Optimal Shared Control of Unmanned Aerial Vehicles
 
