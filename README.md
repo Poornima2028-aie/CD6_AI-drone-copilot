@@ -935,10 +935,5 @@ All members contribute to: Koopman model validation, shared control testing, exp
 
 ---
 
-## 10. Getting Started
-
-### Install Dependencies
-
-```bash
 pip install numpy matplotlib pymavlink torch
 
