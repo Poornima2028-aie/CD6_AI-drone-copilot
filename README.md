@@ -834,53 +834,70 @@ Camera → Perception → Decision Engine → AI Controller → Shared Control �
 
 ## 7. Repository Structure
 
+## 7. Repository Structure
+
+```text
 CD6_AI-drone-copilot/
+│
 ├── docs/
-│ ├── base_paper_summary.md
-│ ├── team_research_report.md
-│ └── architecture_diagrams/
+│   ├── base_paper_summary.md
+│   └── team_research_report.md
+│
+├── architecture_diagrams/
+│
 ├── src/
-│ ├── koopman/
-│ │ ├── edmd.py
-│ │ ├── observable_functions.py
-│ │ └── dynamics_estimator.py
-│ ├── rl/
-│ │ ├── actor_critic.py
-│ │ ├── bellman_error.py
-│ │ └── replay_buffer.py
-│ ├── shared_control/
-│ │ ├── authority_allocation.py
-│ │ └── shared_controller.py
-│ ├── ardupilot_bridge/
-│ │ └── telemetry_reader.py
-│ └── visualization/
-│ └── plot_results.py
+│   ├── koopman/
+│   │   ├── edmd.py
+│   │   └── observable_functions.py
+│   │
+│   ├── dynamics_estimator.py
+│   │
+│   ├── rl/
+│   │   ├── actor_critic.py
+│   │   ├── bellman_error.py
+│   │   └── replay_buffer.py
+│   │
+│   ├── shared_control/
+│   │   ├── authority_allocation.py
+│   │   └── shared_controller.py
+│   │
+│   ├── ardupilot_bridge/
+│   │
+│   └── telemetry_reader.py
+│
+├── visualization/
+│   └── plot_results.py
+│
 ├── simulation/
-│ ├── pybullet/
-│ ├── mujoco/
-│ ├── gazebo/
-│ └── ardupilot_sitl/
+│   ├── pybullet/
+│   └── mujoco/
+│
+├── gazebo/
+│   └── ardupilot_sitl/
+│
 ├── data/
-│ ├── human_maneuvers/
-│ ├── koopa_datasets/
-│ └── telemetry_logs/
+│   ├── human_maneuvers/
+│   └── koopman_datasets/
+│
+├── telemetry_logs/
+│
 ├── models/
-│ ├── koopman_matrices/
-│ ├── actor_weights/
-│ └── critic_weights/
+│   ├── koopman_matrices/
+│   ├── actor_weights/
+│   └── critic_weights/
+│
 ├── notebooks/
-│ ├── edmd_demo.ipynb
-│ └── shared_control_demo.ipynb
+│   ├── edmd_demo.ipynb
+│   └── shared_control_demo.ipynb
+│
 ├── tests/
-│ ├── test_shared_control.py
-│ ├── test_koopman.py
-│ └── test_telemetry_reader.py
+│   ├── test_shared_control.py
+│   ├── test_koopman.py
+│   └── test_telemetry_reader.py
+│
 ├── requirements.txt
 └── README.md
-
-
----
-
+```
 ## 8. Team Responsibilities
 
 | Member | Simulator / Module | Responsibility |
